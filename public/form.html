@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form - WhatsForm</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .form-page {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-submit-form {
+            width: 100%;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-submit-form:hover {
+            background: #20BA5A;
+        }
+
+        .btn-submit-form:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-page">
+        <div class="form-container">
+            <div id="formContent">
+                <div class="form-header">
+                    <h1 id="formTitle">Yükleniyor...</h1>
+                    <p id="formDescription"></p>
+                </div>
+                <form id="submitForm" onsubmit="submitForm(event)">
+                    <div id="formFields"></div>
+                    <button type="submit" class="btn-submit-form" id="submitBtn">Gönder</button>
+                </form>
+            </div>
+            <div id="messageContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const formId = window.location.pathname.split('/').pop();
+
+        // Formu yükle
+        async function loadForm() {
+            try {
+                const response = await fetch(`/api/forms/${formId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayForm(data.form);
+                } else {
+                    showError('Form bulunamadı');
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                showError('Form yüklenemedi');
+            }
+        }
+
+        // Formu göster
+        function displayForm(form) {
+            document.getElementById('formTitle').textContent = form.title;
+            document.getElementById('formDescription').textContent = form.description || '';
+            
+            const fieldsContainer = document.getElementById('formFields');
+            fieldsContainer.innerHTML = '';
+
+            form.fields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'form-group';
+
+                const label = document.createElement('label');
+                label.textContent = field.label;
+                label.setAttribute('for', field.name);
+
+                let input;
+                if (field.type === 'textarea') {
+                    input = document.createElement('textarea');
+                    input.rows = 4;
+                } else {
+                    input = document.createElement('input');
+                    input.type = field.type;
+                }
+
+                input.id = field.name;
+                input.name = field.name;
+                input.required = true;
+                input.className = 'form-input';
+
+                if (field.type === 'email') {
+                    input.type = 'email';
+                } else if (field.type === 'tel') {
+                    input.type = 'tel';
+                } else if (field.type === 'number') {
+                    input.type = 'number';
+                }
+
+                fieldDiv.appendChild(label);
+                fieldDiv.appendChild(input);
+                fieldsContainer.appendChild(fieldDiv);
+            });
+        }
+
+        // Form gönder
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Gönderiliyor...';
+
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            try {
+                const response = await fetch(`/api/forms/${formId}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess('Form başarıyla gönderildi!');
+                    document.getElementById('submitForm').reset();
+                } else {
+                    showError(result.error || 'Form gönderilemedi');
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                showError('Bir hata oluştu. Lütfen tekrar deneyin.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Gönder';
+            }
+        }
+
+        // Başarı mesajı göster
+        function showSuccess(message) {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = `<div class="success-message">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Hata mesajı göster
+        function showError(message) {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+
+        // Sayfa yüklendiğinde formu yükle
+        window.addEventListener('DOMContentLoaded', loadForm);
+    </script>
+</body>
+</html>
+

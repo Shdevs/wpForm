@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - WhatsForm</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 32px;
+            color: #333;
+        }
+
+        .btn-create {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-create:hover {
+            background: #20BA5A;
+        }
+
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .form-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .form-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-action:hover {
+            background: #f9fafb;
+        }
+
+        .btn-copy {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+
+        .btn-copy:hover {
+            background: #20BA5A;
+        }
+
+        .create-form-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-form-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .platform-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .platform-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .platform-option.selected {
+            border-color: #25D366;
+            background: #f0fdf4;
+        }
+
+        .platform-option input {
+            display: none;
+        }
+
+        .fields-container {
+            margin-top: 20px;
+        }
+
+        .field-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .field-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-remove-field {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-add-field {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state h2 {
+            margin-bottom: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Formlarım</h1>
+            <button class="btn-create" onclick="openCreateModal()">+ Yeni Form Oluştur</button>
+        </div>
+
+        <div id="formsContainer" class="forms-grid">
+            <!-- Formlar buraya yüklenecek -->
+        </div>
+
+        <!-- Create Form Modal -->
+        <div id="createModal" class="create-form-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Yeni Form Oluştur</h2>
+                    <button class="close-modal" onclick="closeCreateModal()">&times;</button>
+                </div>
+                <form id="createFormForm" onsubmit="createForm(event)">
+                    <div class="form-group">
+                        <label>Form Başlığı *</label>
+                        <input type="text" id="formTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Form Açıklaması</label>
+                        <textarea id="formDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Gönderim Platformu *</label>
+                        <div class="platform-select">
+                            <div class="platform-option" onclick="selectPlatform('whatsapp')">
+                                <input type="radio" name="platform" value="whatsapp" id="platformWhatsApp" required>
+                                <label for="platformWhatsApp">WhatsApp</label>
+                            </div>
+                            <div class="platform-option" onclick="selectPlatform('telegram')">
+                                <input type="radio" name="platform" value="telegram" id="platformTelegram" required>
+                                <label for="platformTelegram">Telegram</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="platformConfig" style="display: none;">
+                        <div class="form-group" id="whatsappConfig">
+                            <label>WhatsApp Numarası</label>
+                            <input type="tel" id="whatsappNumber" placeholder="+90 555 123 45 67">
+                        </div>
+                        <div class="form-group" id="telegramConfig">
+                            <label>Telegram Bot Token</label>
+                            <input type="text" id="telegramBotToken" placeholder="Bot token'ınızı girin">
+                            <label style="margin-top: 10px;">Chat ID</label>
+                            <input type="text" id="telegramChatId" placeholder="Chat ID'nizi girin">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Form Alanları</label>
+                        <div id="fieldsContainer" class="fields-container">
+                            <!-- Alanlar buraya eklenecek -->
+                        </div>
+                        <button type="button" class="btn-add-field" onclick="addField()">+ Alan Ekle</button>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 30px;">
+                        <button type="button" class="btn-action" onclick="closeCreateModal()" style="flex: 1;">İptal</button>
+                        <button type="submit" class="btn-create" style="flex: 1;">Oluştur</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let fieldCount = 0;
+        let selectedPlatform = '';
+
+        // Sayfa yüklendiğinde formları getir
+        window.addEventListener('DOMContentLoaded', () => {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                window.location.href = '/';
+                return;
+            }
+            loadForms();
+        });
+
+        // Formları yükle
+        async function loadForms() {
+            const userId = localStorage.getItem('userId');
+            try {
+                const response = await fetch(`/api/forms/user/${userId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayForms(data.forms);
+                }
+            } catch (error) {
+                console.error('Formlar yüklenemedi:', error);
+            }
+        }
+
+        // Formları göster
+        function displayForms(forms) {
+            const container = document.getElementById('formsContainer');
+            
+            if (forms.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <h2>Henüz form oluşturmadınız</h2>
+                        <p>İlk formunuzu oluşturmak için "Yeni Form Oluştur" butonuna tıklayın</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = forms.map(form => `
+                <div class="form-card">
+                    <h3>${form.title}</h3>
+                    <p>${form.description || 'Açıklama yok'}</p>
+                    <div class="form-meta">
+                        <span>Platform: ${form.platform === 'whatsapp' ? 'WhatsApp' : 'Telegram'}</span>
+                        <span>${new Date(form.created_at).toLocaleDateString('tr-TR')}</span>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-action" onclick="viewForm('${form.id}')">Görüntüle</button>
+                        <button class="btn-action btn-copy" onclick="copyLink('${form.id}')">Linki Kopyala</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal aç
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        // Modal kapat
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.remove('active');
+            document.getElementById('createFormForm').reset();
+            document.getElementById('fieldsContainer').innerHTML = '';
+            document.getElementById('platformConfig').style.display = 'none';
+            fieldCount = 0;
+            selectedPlatform = '';
+        }
+
+        // Platform seç
+        function selectPlatform(platform) {
+            selectedPlatform = platform;
+            document.querySelectorAll('.platform-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById(`platform${platform.charAt(0).toUpperCase() + platform.slice(1)}`).checked = true;
+            
+            const configDiv = document.getElementById('platformConfig');
+            configDiv.style.display = 'block';
+            document.getElementById('whatsappConfig').style.display = platform === 'whatsapp' ? 'block' : 'none';
+            document.getElementById('telegramConfig').style.display = platform === 'telegram' ? 'block' : 'none';
+        }
+
+        // Alan ekle
+        function addField() {
+            fieldCount++;
+            const container = document.getElementById('fieldsContainer');
+            const fieldHtml = `
+                <div class="field-item" id="field-${fieldCount}">
+                    <div class="field-item-header">
+                        <strong>Alan ${fieldCount}</strong>
+                        <button type="button" class="btn-remove-field" onclick="removeField(${fieldCount})">Sil</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Alan Etiketi</label>
+                        <input type="text" name="field-label-${fieldCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Alan Adı (name)</label>
+                        <input type="text" name="field-name-${fieldCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Alan Tipi</label>
+                        <select name="field-type-${fieldCount}" required>
+                            <option value="text">Metin</option>
+                            <option value="email">E-posta</option>
+                            <option value="tel">Telefon</option>
+                            <option value="number">Sayı</option>
+                            <option value="textarea">Çok Satırlı Metin</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', fieldHtml);
+        }
+
+        // Alan sil
+        function removeField(id) {
+            document.getElementById(`field-${id}`).remove();
+        }
+
+        // Form oluştur
+        async function createForm(event) {
+            event.preventDefault();
+            
+            const userId = localStorage.getItem('userId');
+            const title = document.getElementById('formTitle').value;
+            const description = document.getElementById('formDescription').value;
+            const platform = selectedPlatform;
+            
+            // Alanları topla
+            const fields = [];
+            const fieldItems = document.querySelectorAll('.field-item');
+            fieldItems.forEach(item => {
+                const id = item.id.split('-')[1];
+                fields.push({
+                    label: document.querySelector(`[name="field-label-${id}"]`).value,
+                    name: document.querySelector(`[name="field-name-${id}"]`).value,
+                    type: document.querySelector(`[name="field-type-${id}"]`).value
+                });
+            });
+
+            if (fields.length === 0) {
+                alert('En az bir alan eklemelisiniz');
+                return;
+            }
+
+            const formData = {
+                userId,
+                title,
+                description,
+                fields,
+                platform
+            };
+
+            if (platform === 'whatsapp') {
+                formData.whatsappNumber = document.getElementById('whatsappNumber').value;
+            } else if (platform === 'telegram') {
+                formData.telegramBotToken = document.getElementById('telegramBotToken').value;
+                formData.telegramChatId = document.getElementById('telegramChatId').value;
+            }
+
+            try {
+                const response = await fetch('/api/forms/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Form başarıyla oluşturuldu!');
+                    closeCreateModal();
+                    loadForms();
+                } else {
+                    alert(data.error || 'Form oluşturulamadı');
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                alert('Bir hata oluştu');
+            }
+        }
+
+        // Form görüntüle
+        function viewForm(formId) {
+            window.open(`/form/${formId}`, '_blank');
+        }
+
+        // Linki kopyala
+        function copyLink(formId) {
+            const link = `${window.location.origin}/form/${formId}`;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link kopyalandı!');
+            });
+        }
+    </script>
+</body>
+</html>
+
