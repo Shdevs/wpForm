@@ -1,6 +1,6 @@
 # WhatsForm
 
-WhatsApp və Telegram forma yaratma platforması. İstifadəçilər kod yazmadan formalar yarada bilərlər və forma təqdimləri birbaşa WhatsApp və ya Telegram-a göndərilir.
+WhatsApp və Telegram form yaratma platforması. İstifadəçilər kod yazmadan formalar yarada bilərlər və forma təqdimləri birbaşa WhatsApp və ya Telegram-a göndərilir.
 
 ## Özellikler
 
@@ -60,5 +60,6 @@ npm run dev
 - Telegram Bot API
 - SQLite
 - Vanilla JavaScript
+
 
 
