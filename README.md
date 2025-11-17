@@ -1,58 +1,58 @@
 # WhatsForm
 
-WhatsApp ve Telegram form oluşturma platformu. Kullanıcılar kod yazmadan form oluşturabilir ve form gönderimleri doğrudan WhatsApp veya Telegram'a gönderilir.
+WhatsApp və Telegram forma yaratma platforması. İstifadəçilər kod yazmadan formalar yarada bilərlər və forma təqdimləri birbaşa WhatsApp və ya Telegram-a göndərilir.
 
 ## Özellikler
 
-- 📱 WhatsApp ile kayıt olma ve giriş yapma
-- 🔐 4 haneli doğrulama kodu sistemi
-- 📝 Kod yazmadan form oluşturma
-- 🔗 Form linki paylaşma
-- 📲 WhatsApp veya Telegram'a otomatik mesaj gönderme
-- 📊 Form gönderimlerini görüntüleme
+- 📱 Qeydiyyatdan keçin və WhatsApp ilə daxil olun
+- 🔐 4-rəqəmli doğrulama kodu sistemi
+- 📝 Kod yazmadan formalar yaradın
+- 🔗 Forma bağlantılarını paylaşın
+- 📲 WhatsApp və ya Telegram-a avtomatik mesajlar göndərin
+- 📊 Forma təqdimatlarına baxın
 
-## Kurulum
+## Quraşdırma
 
-1. Bağımlılıkları yükleyin:
+1. Asılılıqları quraşdırın:
 ```bash
 npm install
 ```
 
-2. `.env` dosyası oluşturun (opsiyonel):
+2. `.env` fayl yaradın (opsiyonel):
 ```
 PORT=3000
 ```
 
-3. Sunucuyu başlatın:
+3. Serveri işə salın:
 ```bash
 npm start
 ```
 
-veya geliştirme modu için:
+və ya developer rejimi üçün:
 ```bash
 npm run dev
 ```
 
-## Kullanım
+## İstifadəsi
 
-1. Ana sayfada telefon numaranızı girin
-2. WhatsApp'tan gelen 4 haneli kodu girin
-3. Dashboard'da yeni form oluşturun
-4. Form alanlarını ekleyin
-5. WhatsApp veya Telegram platformunu seçin
-6. Form linkini paylaşın
+1. Əsas səhifədə telefon nömrənizi daxil edin
+2. WhatsApp-dan 4 rəqəmli kodu daxil edin
+3. İdarə panelində yeni forma yaradın
+4. Forma sahələrini əlavə edin
+5. WhatsApp və ya Telegram platformasını seçin
+6. Formanın linkini paylaşın
 
-## WhatsApp Web Bağlantısı
+## WhatsApp Web Linki
 
-İlk kullanımda WhatsApp Web'e bağlanmak için QR kod oluşturulacaktır. QR kodu `/api/whatsapp/qr` endpoint'inden alabilirsiniz.
+İlk istifadə zamanı WhatsApp Web-ə qoşulmaq üçün QR kodu yaradılacaq. QR kodunu `/api/whatsapp/qr` son nöqtəsindən əldə edə bilərsiniz.
 
-## Notlar
+## Qeydlər
 
-- WhatsApp Web bağlantısı için QR kod taramanız gerekmektedir
-- Telegram kullanımı için bot token ve chat ID gereklidir
-- Doğrulama kodları 10 dakika geçerlidir
+- WhatsApp Web-ə qoşulmaq üçün QR kodu skan etməlisiniz.
+- Telegramdan istifadə etmək üçün bot nişanı və söhbət ID tələb olunur.
+- Doğrulama kodları 10 dəqiqə ərzində etibarlıdır.
 
-## Teknolojiler
+## Texnologiyalar
 
 - Node.js
 - Express.js
@@ -60,4 +60,5 @@ npm run dev
 - Telegram Bot API
 - SQLite
 - Vanilla JavaScript
+
 
