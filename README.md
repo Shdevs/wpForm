@@ -6,10 +6,10 @@ WhatsApp və Telegram form yaratma platforması. İstifadəçilər kod yazmadan 
 
 - 📱 Qeydiyyatdan keçin və WhatsApp ilə daxil olun
 - 🔐 4-rəqəmli doğrulama kodu sistemi
-- 📝 Kod yazmadan formalar yaradın
-- 🔗 Forma bağlantılarını paylaşın
+- 📝 Kod yazmadan formlar yaradın
+- 🔗 Form bağlantılarını paylaşın
 - 📲 WhatsApp və ya Telegram-a avtomatik mesajlar göndərin
-- 📊 Forma təqdimatlarına baxın
+- 📊 Form təqdimatlarına baxın
 
 ## Quraşdırma
 
@@ -38,9 +38,9 @@ npm run dev
 1. Əsas səhifədə telefon nömrənizi daxil edin
 2. WhatsApp-dan 4 rəqəmli kodu daxil edin
 3. İdarə panelində yeni forma yaradın
-4. Forma sahələrini əlavə edin
+4. Form sahələrini əlavə edin
 5. WhatsApp və ya Telegram platformasını seçin
-6. Formanın linkini paylaşın
+6. Formunn linkini paylaşın
 
 ## WhatsApp Web Linki
 
@@ -60,6 +60,7 @@ npm run dev
 - Telegram Bot API
 - SQLite
 - Vanilla JavaScript
+
 
 
 
